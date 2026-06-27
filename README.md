@@ -35,14 +35,14 @@ Below are screenshots demonstrating the mobile-responsive web interface, built u
 
 | Home & Connect Page | Order Dashboard |
 | --- | --- |
-| ![Mobile UI 1](./sub%20assets/mobui1.png) | ![Mobile UI 2](./sub%20assets/mobui2.png) |
+ | ![Mobile UI 2](mobui2.png) |
 
 ---
 
 ### ⚙️ CI/CD Pipeline
 Our GitHub Actions workflow automatically builds the Next.js frontend, runs the lint checkers, compiles the Rust contracts to WebAssembly, and runs both cargo and unit tests upon pushing commits to the main repository:
 
-![CI/CD Pipeline Running](./sub%20assets/cicdss.png)
+![CI/CD Pipeline Running](cicdss.png)
 
 ---
 
@@ -50,7 +50,7 @@ Our GitHub Actions workflow automatically builds the Next.js frontend, runs the 
 
 | Landing Screen | Main Dashboard Overview |
 | --- | --- |
-| ![Desktop UI 1](./sub%20assets/ui1.png) | ![Desktop UI 2](./sub%20assets/ui2.png) |
+| ![Desktop UI 1](ui1.png) | ![Desktop UI 2](ui2.png) |
 
 ---
 
@@ -180,11 +180,6 @@ $ npm run test
        cd contracts/order-contract && cargo test
        cd ../escrow-contract && cargo test
        ```
-
----
-
-## 👨‍💻 Author
-**BhagatWeb** — [GitHub Profile](https://github.com/BhagatWeb)
 
 ---
 
