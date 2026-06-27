@@ -1,55 +1,37 @@
-import Link from 'next/link';
-import { Badge } from '../ui/Badge';
-import { stellar } from '@/lib/stellar';
-import { FiArrowRight, FiUser, FiTruck, FiSearch } from 'react-icons/fi';
-import type { Order } from '@/lib/types';
+'use client';
 
-interface OrderCardProps {
-  order: Order;
-}
+import { useCallback, useEffect, useState } from 'react';
+import { escrowClient } from '@/lib/contracts/escrow-client';
+import type { EscrowDeposit } from '@/lib/types';
 
-export function OrderCard({ order }: OrderCardProps) {
-  return (
-    <Link href={`/orders/${order.id}`}>
-      <div className="bg-slate-50 border border-slate-200 p-6 rounded-lg group hover:border-slate-900 transition-colors cursor-pointer" id={`order-card-${order.id}`}>
-        <div className="flex items-start justify-between gap-3 mb-6">
-          <h3 className="font-bold text-slate-900 text-base">
-            Order #{order.id}
-          </h3>
-          <Badge status={order.status} />
-        </div>
+export function useEscrow(orderId: number, publicKey?: string) {
+  const [escrow, setEscrow] = useState<EscrowDeposit | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-        <div className="space-y-2 mb-6">
-          <div className="flex justify-between text-xs text-slate-500">
-            <span className="flex items-center gap-1.5">
-              <FiUser className="h-3.5 w-3.5" />
-              Buyer: {stellar.formatAddress(order.buyer, 4, 4)}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <FiUser className="h-3.5 w-3.5" />
-              Supplier: {stellar.formatAddress(order.supplier, 4, 4)}
-            </span>
-          </div>
-          <div className="flex justify-between text-xs text-slate-500">
-            <span className="flex items-center gap-1.5">
-              <FiTruck className="h-3.5 w-3.5" />
-              Shipper: {stellar.formatAddress(order.shipper, 4, 4)}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <FiSearch className="h-3.5 w-3.5" />
-              Inspector: {stellar.formatAddress(order.inspector, 4, 4)}
-            </span>
-          </div>
-        </div>
+  const fetchEscrow = useCallback(async () => {
+    if (!publicKey || !orderId) {
+      setEscrow(null);
+      setLoading(false);
+      return;
+    }
 
-        <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
-          <p className="text-lg font-bold text-slate-900">
-            {Number(order.amount).toFixed(2)}{' '}
-            <span className="text-xs font-normal text-slate-500">XLM</span>
-          </p>
-          <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">chevron_right</span>
-        </div>
-      </div>
-    </Link>
-  );
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await escrowClient.getEscrow(orderId, publicKey);
+      setEscrow(data);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to load escrow';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  }, [orderId, publicKey]);
+
+  useEffect(() => {
+    fetchEscrow();
+  }, [fetchEscrow]);
+
+  return { escrow, loading, error, refetch: fetchEscrow };
 }

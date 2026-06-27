@@ -183,5 +183,10 @@ $ npm run test
 
 ---
 
+## 👨‍💻 Author
+**BhagatWeb** — [GitHub Profile](https://github.com/BhagatWeb)
+
+---
+
 ## 📄 License
 This project is licensed under the MIT License.

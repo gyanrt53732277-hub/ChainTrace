@@ -1,42 +1,45 @@
-import { describe, it, expect } from 'vitest';
-import { stellar } from '@/lib/stellar';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import { Toaster } from 'react-hot-toast';
 
-describe('StellarHelper Utilities', () => {
-  describe('formatAddress', () => {
-    it('truncates public keys correctly', () => {
-      const address = 'GB7OTVADKAP2N7CLW5X7Q5ZAKN6635PEIX4UKSX5TPSPGFF3ND224EIN';
-      expect(stellar.formatAddress(address)).toBe('GB7O...4EIN');
-    });
+const inter = Inter({ subsets: ['latin'] });
 
-    it('returns short addresses as-is', () => {
-      const short = 'GABC';
-      expect(stellar.formatAddress(short)).toBe('GABC');
-    });
-  });
+export const metadata: Metadata = {
+  title: 'ChainTrace — Supply Chain Escrow & Financing',
+  description: 'Trustless trade and supply chain tracking on Stellar Soroban',
+};
 
-  describe('getExplorerLink', () => {
-    it('generates correct transaction link', () => {
-      const tx = 'abc123hash';
-      expect(stellar.getExplorerLink(tx, 'tx')).toBe('https://stellar.expert/explorer/testnet/tx/abc123hash');
-    });
-
-    it('generates correct account link', () => {
-      const acc = 'GACC';
-      expect(stellar.getExplorerLink(acc, 'account')).toBe('https://stellar.expert/explorer/testnet/account/GACC');
-    });
-  });
-
-  describe('stroopsToXlm', () => {
-    it('converts basic stroop balances correctly', () => {
-      expect(stellar.stroopsToXlm(100_0000000)).toBe('100.0000000');
-      expect(stellar.stroopsToXlm(70000000)).toBe('7.0000000');
-    });
-  });
-
-  describe('xlmToStroops', () => {
-    it('converts XLM amounts to stroops correctly', () => {
-      expect(stellar.xlmToStroops('10')).toBe('100000000');
-      expect(stellar.xlmToStroops('1.5')).toBe('15000000');
-    });
-  });
-});
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <head>
+        <link href="https://fonts.googleapis.com" rel="preconnect" />
+        <link crossOrigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+      </head>
+      <body className={`${inter.className} flex min-h-screen flex-col bg-white text-slate-900`}>
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: '#ffffff',
+              color: '#0f172a',
+              border: '1px solid #e2e8f0',
+            },
+          }}
+        />
+      </body>
+    </html>
+  );
+}
